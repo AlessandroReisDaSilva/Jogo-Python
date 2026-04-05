@@ -1,7 +1,6 @@
 import random
 import time
 import os
-import simpleaudio
 
 jogador = [
 ["░", "▒", "░", "▒", "░", "▒", "░", "▒", "░", "▒"],
@@ -31,8 +30,10 @@ inimigos = [
 
 partes = 0
 ponto = 0
+pontos_salvos = 0
 bala = 0
 nivel = 0
+
 def iniciar():
     nivel = random.randint(1, 4)
     ponto = 0
@@ -132,9 +133,6 @@ def renderizar():
             print(f" {jogador[i][j]} ", end="")
         print("\n")
 
-renderizar()
-
-
 def acao():
     xEntrada = input("Indicar a posição x - horizontal: ")
     yEntrada = input("Indicar a posição y - vertical: ")
@@ -179,6 +177,8 @@ def menu():
         ui = "break"
     return ui
 
+nome = input("Digite o nome, apelido ou nome fictício de jogador: ")
+
 while True:
     if ui == "menu":
         ui = menu()
@@ -201,11 +201,9 @@ while True:
         if str(temp2) != "False":
             ponto = ponto + int(temp2)
             if ponto == partes:
-                print(f"Você ganhou. | Pontos {pontos}")
-                for r in range(10):
-                    print("═", end="")
-                    time.sleep(1)
-                print("\n")
+                print(f"O Jogador {nome} ganhou. | Pontos {pontos} | Pontos acumulados {pontos_salvos}")
+                pontos_salvos += pontos
+                input("Precione para ir ao proxima nível aleatório")
                 ui = "game_loading"
         else:
             ui = "menu"
