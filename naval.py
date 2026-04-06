@@ -163,7 +163,7 @@ def acao():
         temp = "False"
         return temp
 
-ui = "menu"
+estadoDeFuncionamento = "menu"
 def menu():
     os.system("cls")
     print("A Batalha naval.")
@@ -172,17 +172,17 @@ def menu():
     print("2. Sair")
     tecla = input("Digite o número para executar uma ação: ")
     if tecla == "1":
-        ui = "game_loading"
+        estadoDeFuncionamento = "game_loading"
     else:
-        ui = "break"
-    return ui
+        estadoDeFuncionamento = "break"
+    return estadoDeFuncionamento
 
 nome = input("Digite o nome, apelido ou nome fictício de jogador: ")
 
 while True:
-    if ui == "menu":
-        ui = menu()
-    elif ui == "game_loading":
+    if estadoDeFuncionamento == "menu":
+        estadoDeFuncionamento = menu()
+    elif estadoDeFuncionamento == "game_loading":
         carregado = iniciar()
         pontos = carregado[0]
         inimigos = carregado[1]
@@ -191,21 +191,29 @@ while True:
         nivel = carregado[4]
         jogador = carregado[5]
         renderizar()
-        ui = "game"
-    elif ui == "game":
+        estadoDeFuncionamento = "game"
+    elif estadoDeFuncionamento == "game":
         print(f"Pontos {ponto} | Munição {bala}")
         temp2 = acao()
         bala -= 1
         if bala <= 0:
-            ui = "menu"
+                print(f"O Jogador {nome} perdeu. | Pontos {pontos} | Pontos acumulados {pontos_salvos}")
+                pontos_salvos += pontos
+                print("1. jogar nível aleatório")
+                print("2. Sair")
+                escolha = input("Escreva um número:")
+                if escolha == "1":
+                    estadoDeFuncionamento = "game_loading"
+                else:
+                    estadoDeFuncionamento = "menu"
         if str(temp2) != "False":
             ponto = ponto + int(temp2)
             if ponto == partes:
                 print(f"O Jogador {nome} ganhou. | Pontos {pontos} | Pontos acumulados {pontos_salvos}")
                 pontos_salvos += pontos
                 input("Precione para ir ao proxima nível aleatório")
-                ui = "game_loading"
+                estadoDeFuncionamento = "game_loading"
         else:
-            ui = "menu"
+            estadoDeFuncionamento = "menu"
     else:
         break
