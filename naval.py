@@ -183,7 +183,7 @@ def iniciar():
     bala = partes + 10
     return ponto, inimigos, partes, bala, nivel, jogador, inimigosTipo
 
-debug = True
+debug = False
 
 def renderizar():
     os.system("cls")
@@ -210,9 +210,9 @@ def renderizar():
 def acao():
     xEntrada = input("Indicar a posição x - horizontal: ")
     yEntrada = input("Indicar a posição y - vertical: ")
-    if str(xEntrada).isdigit() == True and str(yEntrada).isdigit() == True:
+    if str(xEntrada).isdigit() == True or str(yEntrada).isdigit() == True:
         temp = 0
-        inimigoTipo = ""
+        inimigoTipo = "?"
         try:
             if jogador[int(yEntrada)-1][int(xEntrada)-1] != inimigos[int(yEntrada)-1][int(xEntrada)-1] and jogador[int(yEntrada)-1][int(xEntrada)-1] != "x":
                 temp = 1
@@ -301,6 +301,7 @@ def acao():
         return temp, inimigoTipo
     else:
         temp = "False"
+        inimigoTipo = "?"
         return temp, inimigoTipo
 
 estadoDeFuncionamento = "menu"
@@ -312,7 +313,7 @@ def menu():
     print("2. Sair")
     tecla = input("Digite o número para executar uma ação: ")
     if tecla == "1":
-        estadoDeFuncionamento = "game_loading"
+        estadoDeFuncionamento = "start"
     else:
         estadoDeFuncionamento = "break"
     return estadoDeFuncionamento
@@ -322,6 +323,9 @@ nome = input("Digite o nome, apelido ou nome fictício de jogador: ")
 while True:
     if estadoDeFuncionamento == "menu":
         estadoDeFuncionamento = menu()
+    elif estadoDeFuncionamento == "start":
+        tempo_inicial = time.time()
+        estadoDeFuncionamento = "game_loading"
     elif estadoDeFuncionamento == "game_loading":
         carregado = iniciar()
         pontos = carregado[0]
@@ -347,15 +351,89 @@ while True:
                 if escolha == "1":
                     estadoDeFuncionamento = "game_loading"
                 else:
+                    tempo_final = time.time()
+                    duracao = int(tempo_final - tempo_inicial)
+                    dados = []
+                    if os.path.isfile("placar.txt"):
+                        with open("placar.txt", "r") as arq:
+                            dados = arq.readlines()
+
+                    dados.append(f"{nome};{pontos_salvos};{duracao}\n")
+
+                    with open("placar.txt", "a+") as arq:
+                        arq.write(f"{nome};{pontos_salvos};{duracao}\n")
+                    
+                    print("  Nº Nome do Jogador.........: Pontos Acumulados: Tempo.:")
+                    placar = sorted(dados, key=lambda x: (int(x.split(';')[1]), int(x.split(';')[2])*-1), reverse=True)
+                    posicao = 0        
+                    for linha in placar:
+                        partes = linha.split(";")    
+                        posicao += 1
+                        if partes[0] == nome and int(partes[1]) == pontos and int(partes[2]) == duracao:    
+                            print(f"► {posicao:2d} {partes[0]:25s}   {int(partes[1]):2d}               {int(partes[2]):3d} seg")
+                        else:
+                            print(f"  {posicao:2d} {partes[0]:25s}   {int(partes[1]):2d}               {int(partes[2]):3d} seg")
+                    input("Precione Enter para sair do placar.")
                     estadoDeFuncionamento = "menu"
         if str(temp2[0]) != "False":
             ponto = ponto + int(temp2[0])
             if ponto == partes:
                 print(f"O Jogador {nome} ganhou. | Pontos {pontos} | Pontos acumulados {pontos_salvos}")
                 pontos_salvos += pontos
-                input("Precione para ir ao proxima nível aleatório")
-                estadoDeFuncionamento = "game_loading"
+                print("1. jogar nível aleatório")
+                print("2. Sair")
+                escolha = input("Escreva um número:")
+                if escolha == "1":
+                    estadoDeFuncionamento = "game_loading"
+                else:
+                    tempo_final = time.time()
+                    duracao = int(tempo_final - tempo_inicial)
+                    dados = []
+                    if os.path.isfile("placar.txt"):
+                        with open("placar.txt", "r") as arq:
+                            dados = arq.readlines()
+
+                    dados.append(f"{nome};{pontos_salvos};{duracao}\n")
+
+                    with open("placar.txt", "a+") as arq:
+                        arq.write(f"{nome};{pontos_salvos};{duracao}\n")
+                    
+                    print("   Nº Nome do Jogador.........: Pontos Acumulados: Tempo.:")
+                    placar = sorted(dados, key=lambda x: (int(x.split(';')[1]), int(x.split(';')[2])*-1), reverse=True)
+                    posicao = 0        
+                    for linha in placar:
+                        partes = linha.split(";")    
+                        posicao += 1
+                        if partes[0] == nome and int(partes[1]) == pontos and int(partes[2]) == duracao:    
+                            print(f"► {posicao:2d} {partes[0]:25s}   {int(partes[1]):2d}               {int(partes[2]):3d} seg")
+                        else:
+                            print(f"  {posicao:2d} {partes[0]:25s}   {int(partes[1]):2d}               {int(partes[2]):3d} seg")
+                    input("Precione Enter para sair do placar.")
+                    estadoDeFuncionamento = "menu"
         else:
+            tempo_final = time.time()
+            duracao = int(tempo_final - tempo_inicial)
+            dados = []
+            if os.path.isfile("placar.txt"):
+                with open("placar.txt", "r") as arq:
+                    dados = arq.readlines()
+
+            dados.append(f"{nome};{pontos_salvos};{duracao}\n")
+
+            with open("placar.txt", "a+") as arq:
+                arq.write(f"{nome};{pontos_salvos};{duracao}\n")
+                    
+            print("   Nº Nome do Jogador.........: Pontos Acumulados: Tempo.:")
+            placar = sorted(dados, key=lambda x: (int(x.split(';')[1]), int(x.split(';')[2])*-1), reverse=True)
+            posicao = 0        
+            for linha in placar:
+                partes = linha.split(";")    
+                posicao += 1
+                if partes[0] == nome and int(partes[1]) == pontos and int(partes[2]) == duracao:    
+                    print(f"► {posicao:2d} {partes[0]:25s}   {int(partes[1]):2d}               {int(partes[2]):3d} seg")
+                else:
+                    print(f"  {posicao:2d} {partes[0]:25s}   {int(partes[1]):2d}               {int(partes[2]):3d} seg")
+            input("Precione Enter para sair do placar.")
             estadoDeFuncionamento = "menu"
     else:
         break
