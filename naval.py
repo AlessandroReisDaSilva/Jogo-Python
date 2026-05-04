@@ -210,7 +210,7 @@ def renderizar():
 def acao():
     xEntrada = input("Indicar a posição x - horizontal: ")
     yEntrada = input("Indicar a posição y - vertical: ")
-    if str(xEntrada).isdigit() == True or str(yEntrada).isdigit() == True:
+    if str(xEntrada).isdigit() == True and str(yEntrada).isdigit() == True and str(xEntrada).isspace() == False and str(yEntrada).isspace() == False:
         temp = 0
         inimigoTipo = "?"
         try:
